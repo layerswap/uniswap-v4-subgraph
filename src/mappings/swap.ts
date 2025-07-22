@@ -1,4 +1,4 @@
-import { BigDecimal, BigInt } from '@graphprotocol/graph-ts'
+import { BigDecimal, BigInt, log } from '@graphprotocol/graph-ts'
 
 import { Swap as SwapEvent } from '../types/PoolManager/PoolManager'
 import { Bundle, Pool, PoolManager, Swap, Token } from '../types/schema'
@@ -36,7 +36,12 @@ export function handleSwapHelper(event: SwapEvent, subgraphConfig: SubgraphConfi
   const bundle = Bundle.load('1')!
   const poolManager = PoolManager.load(poolManagerAddress)!
   const poolId = event.params.id.toHexString()
-  const pool = Pool.load(poolId)!
+  const pool = Pool.load(poolId)
+
+  if (!pool) {
+    log.warning('Pool not found: {}', [poolId])
+    return
+  }
 
   const token0 = Token.load(pool.token0)
   const token1 = Token.load(pool.token1)
