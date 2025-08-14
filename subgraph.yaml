@@ -1,19 +1,21 @@
-specVersion: 0.0.4
+specVersion: 1.0.0
 description: Uniswap is a decentralized protocol for automated token exchange on Ethereum.
 repository: https://github.com/Uniswap/v4-subgraph
 schema:
   file: ./schema.graphql
+indexerHints:
+  prune: auto
 features:
   - nonFatalErrors
   - grafting
 dataSources:
   - kind: ethereum/contract
     name: PoolManager
-    network: mainnet
+    network: avalanche
     source:
       abi: PoolManager
-      address: "0x000000000004444c5dc75cB358380D2e3dE08A90"
-      startBlock: 21688329
+      address: "0x06380C0e0912312B5150364B9DC4542BA0DbBc85"
+      startBlock: 56195376
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -43,11 +45,11 @@ dataSources:
           handler: handleSwap
   - kind: ethereum/contract
     name: PositionManager
-    network: mainnet
+    network: avalanche
     source:
       abi: PositionManager
-      address: "0xbD216513d74C8cf14cf4747E6AaA6420FF64ee9e"
-      startBlock: 21689089
+      address: "0xB74b1F14d2754AcfcbBe1a221023a5cf50Ab8ACD"
+      startBlock: 56195382
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -65,25 +67,3 @@ dataSources:
           handler: handleUnsubscription
         - event: Transfer(indexed address,indexed address,indexed uint256)
           handler: handleTransfer
-  - kind: ethereum/contract
-    name: EulerSwapFactory
-    network: mainnet
-    source:
-      abi: EulerSwapFactory
-      address: "0xb013be1D0D380C13B58e889f412895970A2Cf228"
-      startBlock: 22676162
-    mapping:
-      kind: ethereum/events
-      apiVersion: 0.0.7
-      language: wasm/assemblyscript
-      file: ./src/mappings/index.ts
-      entities:
-        - Position
-      abis:
-        - name: EulerSwapFactory
-          file: ./abis/EulerSwapFactory.json
-      eventHandlers:
-        - event: PoolDeployed(indexed address,indexed address,indexed address,address)
-          handler: handleHookDeployed
-        - event: PoolUninstalled(indexed address,indexed address,indexed address,address)
-          handler: handleHookUninstalled
